@@ -38,6 +38,27 @@ END PROCESS;
 stim_process: PROCESS
 BEGIN   
 	--TODO: Stimulate the inputs for the pipelined equation ((a + b) * 42) - (c * d * (a - e)) and assert the results
+	s_a <= 1;
+	s_b <= 2;
+	s_c <= 3;
+	s_d <= 4;
+	s_e <= 5;
+	wait for 1 * clk_period;
+
+	s_a <= 0;
+	s_b <= 0;
+	s_c <= 0;
+	s_d <= 0;
+	s_e <= 0;
+	wait for 1 * clk_period;
+
+	s_a <= 1;
+	s_b <= 2;
+	s_c <= 3;
+	s_d <= 4;
+	s_e <= 5;
+	wait for 1 * clk_period;
+
 	WAIT;
 END PROCESS stim_process;
 END;
