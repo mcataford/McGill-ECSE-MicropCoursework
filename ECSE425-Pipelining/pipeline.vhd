@@ -12,7 +12,7 @@ end pipeline;
 architecture behavioral of pipeline is
 
 --We define all of the signals used as current values of the ops.
-signal current_op1, current_op2, current_op3, current_op4, current_op5, current_output: integer;
+signal current_op1, current_op2, current_op3, current_op4, current_op5: integer;
 
 --We also define the signals that will be the 'next' value meant for the next cycle.
 signal next_op1, next_op2, next_op3, next_op4, next_op5, next_final: integer;
@@ -39,14 +39,13 @@ begin
 		op3_2 <= op3_1;
 		op4 <= current_op4;
 		op5 <= current_op5;
-		final_output <= current_output;
+		final_output <= next_final;
 
 		current_op1 <= next_op1;
 		current_op2 <= next_op2;
 		current_op3 <= next_op3;
 		current_op4 <= next_op4;
 		current_op5 <= next_op5;
-		current_output <= next_final;
 
 		a_1 <= a;
 		a_2 <= a_1;
