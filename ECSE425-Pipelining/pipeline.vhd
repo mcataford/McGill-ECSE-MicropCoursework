@@ -11,35 +11,35 @@ end pipeline;
 
 architecture behavioral of pipeline is
 
---We define all of the signals used as current values of the ops.
+-- Signals used to define values at present time, used for calculation of next step.
 signal current_op1, current_op2, current_op3, current_op4, current_op5: integer;
 
---We also define the signals that will be the 'next' value meant for the next cycle.
+-- Signals used to store the result that will be pushed to the current state at the next step.
 signal next_op1, next_op2, next_op3, next_op4, next_op5, next_final: integer;
 
---To force signals to be delayed until the right pipeline stage.
+-- Intermediate signals used to delay inputs that need to be preserved for future steps.
 signal a_1, a_2, a_3, e_1, e_2, e_3, c_1, c_2, d_1, d_2, op2_1, op2_2, op2_3, op2_4, op3_1, op3_2 : integer;
 
 begin
--- todo: complete this
 process (clk)
 begin
-
+	-- Act on the rising edge
 	if rising_edge(clk) then
 
-
+		-- The current value is transferred to the output ports.
+		-- The intermediates are pushed forward to advance delays.
 		op1 <= current_op1;
 		op2 <= current_op2;
 		op2_1 <= current_op2;
 		op2_2 <= op2_1;
 		op2_3 <= op2_2;
-		op2_4 <= op2_3;
 		op3 <= current_op3;
 		op3_1 <= current_op3;
-		op3_2 <= op3_1;
 		op4 <= current_op4;
 		op5 <= current_op5;
 		final_output <= next_final;
+
+		-- The calculated value replaces the current one for all ops.
 
 		current_op1 <= next_op1;
 		current_op2 <= next_op2;
@@ -47,6 +47,7 @@ begin
 		current_op4 <= next_op4;
 		current_op5 <= next_op5;
 
+		-- The intermediates are advanced by one step.
 		a_1 <= a;
 		a_2 <= a_1;
 		a_3 <= a_2;
@@ -62,6 +63,7 @@ begin
 
 end process;
 
+-- Calculation of the next cycle's values.
 next_op1 <= a + b;
 next_op2 <= current_op1 * 42;
 next_op3 <= c_2 * d_2;
