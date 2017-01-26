@@ -26,20 +26,7 @@ begin
 	-- Act on the rising edge
 	if rising_edge(clk) then
 
-		-- The current value is transferred to the output ports.
-		-- The intermediates are pushed forward to advance delays.
-		op1 <= current_op1;
-		op2 <= current_op2;
-		op2_1 <= current_op2;
-		op2_2 <= op2_1;
-		op2_3 <= op2_2;
-		op3 <= current_op3;
-		op3_1 <= current_op3;
-		op4 <= current_op4;
-		op5 <= current_op5;
-		final_output <= next_final;
-
-		-- The calculated value replaces the current one for all ops.
+		-- Setting the new values for the outputs.
 
 		current_op1 <= next_op1;
 		current_op2 <= next_op2;
@@ -48,6 +35,7 @@ begin
 		current_op5 <= next_op5;
 
 		-- The intermediates are advanced by one step.
+
 		a_1 <= a;
 		a_2 <= a_1;
 		a_3 <= a_2;
@@ -59,6 +47,10 @@ begin
 		d_1 <= d;
 		d_2 <= d_1;
 
+		op2_2 <= op2_1;
+		op2_3 <= op2_2;
+		op3_1 <= current_op3;
+		op2_1 <= current_op2;	
 	end if;
 
 end process;
@@ -70,5 +62,14 @@ next_op3 <= c_2 * d_2;
 next_op4 <= a_3 - e_3;
 next_op5 <= op3_1 * current_op4;
 next_final <= op2_3 - current_op5;
+
+-- Assign. of the output values based on the current value of each intermediate.
+op1 <= current_op1;
+op2 <= current_op2;
+op3 <= current_op3;
+op4 <= current_op4;
+op5 <= current_op5;
+final_output <= next_final;
+
 
 end behavioral;
