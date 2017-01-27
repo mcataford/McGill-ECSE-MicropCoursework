@@ -26,7 +26,8 @@
 -- 
 
 LIBRARY ieee;                                               
-USE ieee.std_logic_1164.all;                                
+USE ieee.std_logic_1164.all;   
+USE std.textio.all;                             
 
 ENTITY PIXEL_PROCESSOR_vhd_tst IS
 END PIXEL_PROCESSOR_vhd_tst;
@@ -43,6 +44,11 @@ SIGNAL OPERATION : STD_LOGIC_VECTOR(2 DOWNTO 0);
 SIGNAL PIXEL_DATA : STD_LOGIC_VECTOR(7 DOWNTO 0);
 SIGNAL PIXEL_OPERAND : STD_LOGIC_VECTOR(7 DOWNTO 0);
 SIGNAL RESET : STD_LOGIC;
+
+signal EOF: bit := '0';
+signal DATAREAD, DATASAVE: real;
+signal LINENUMBER: integer := 1;
+
 COMPONENT PIXEL_PROCESSOR
 	PORT (
 	CLOCK : IN STD_LOGIC;
@@ -83,58 +89,53 @@ begin
 
 end process;   
 
-behaviour : process
+reading: process(CLOCK)
+
+file INFILE: text is in "test.txt";
+variable INLINE: line;
+variable DATAREAD1: real;
+
+begin
+	if rising_edge(CLOCK) then
+
+		if not endfile(INFILE) then
+			readline(INFILE, INLINE);
+			read(INLINE, DATAREAD1);
+			DATAREAD <= DATAREAD1;
+			
+		else
+			EOF <= '1';
+			
+		end if;
+
+	end if;
+end process reading;
+
+writing: process(CLOCK)
+
+file OUTFILE: text is out "testout.txt";
+variable OUTLINE: line;
 
 begin
 
-	PIXEL_DATA <= "00000001";
-	PIXEL_OPERAND <= "00000011";
-	OPERATION <= "000";
-	wait for 1 * clock_period;
-	assert(DATA_OUT = "00000011") report("SET failed.");
+	if falling_edge(CLOCK) then
+	
+		if EOF = '0' then
+		
+			write(OUTLINE, DATAREAD, right, 16, 12);
+			writeline(OUTFILE, OUTLINE);
+			LINENUMBER <= LINENUMBER + 1;
+		
+		else
+		
+			null;
+		
+		end if;
+	
+	end if;
 
-	PIXEL_DATA <= "00000001";
-	PIXEL_OPERAND <= "00000001";
-	OPERATION <= "001";
-	wait for 1 * clock_period;
-	assert(DATA_OUT = "00000010") report("ADD failed.");
+end process writing;
 
-	PIXEL_DATA <= "00000011";
-	PIXEL_OPERAND <= "00000001";
-	OPERATION <= "010";
-	wait for 1 * clock_period;
-	assert(DATA_OUT = "00000010") report("SUB failed.");
 
-	PIXEL_DATA <= "00000001";
-	PIXEL_OPERAND <= "00000011";
-	OPERATION <= "011";
-	wait for 1 * clock_period;
-	assert(DATA_OUT = "00000001") report("AND failed.");
-
-	PIXEL_DATA <= "00001001";
-	PIXEL_OPERAND <= "00000001";
-	OPERATION <= "100";
-	wait for 1 * clock_period;
-	assert(DATA_OUT = "00001001") report("OR failed.");
-
-	PIXEL_DATA <= "00000011";
-	PIXEL_OPERAND <= "00000001";
-	OPERATION <= "101";
-	wait for 1 * clock_period;
-	assert(DATA_OUT = "00000010") report("XOR failed.");
-
-	PIXEL_DATA <= "00001001";
-	PIXEL_OPERAND <= "00000001";
-	OPERATION <= "110";
-	wait for 1 * clock_period;
-	assert(DATA_OUT = "11110110") report("INVERT failed.");
-
-	PIXEL_DATA <= "00000011";
-	PIXEL_OPERAND <= "00000001";
-	OPERATION <= "111";
-	wait for 1 * clock_period;
-	assert(DATA_OUT = "11111111") report("THRESH failed.");
-
-end process;
                                     
 END PIXEL_PROCESSOR_arch;
