@@ -72,14 +72,39 @@ BEGIN
 	);
 
 
-
+-- Clock signal process
 clock_signal : process
 begin
 
-	CLOCK <= '1';
-	wait for clock_period / 2;
 	CLOCK <= '0';
+	wait for clock_period / 2;
+	CLOCK <= '1';
 	wait for clock_period / 2; 
 
-end process;                                       
+end process;   
+
+behaviour : process
+
+begin
+
+	PIXEL_DATA <= "00000001";
+	PIXEL_OPERAND <= "00000011";
+	OPERATION <= "000";
+	wait for 1 * clock_period;
+	assert(DATA_OUT = "00000011") report("SET failed.");
+
+	PIXEL_DATA <= "00000001";
+	PIXEL_OPERAND <= "00000001";
+	OPERATION <= "001";
+	wait for 1 * clock_period;
+	assert(DATA_OUT = "00000010") report("ADD failed.");
+
+	PIXEL_DATA <= "00000011";
+	PIXEL_OPERAND <= "00000001";
+	OPERATION <= "010";
+	wait for 1 * clock_period;
+	assert(DATA_OUT = "00000010") report("SUB failed.");
+
+end process;
+                                    
 END PIXEL_PROCESSOR_arch;
