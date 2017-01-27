@@ -63,6 +63,8 @@ begin
 					else
 						DATA_OUT <= PIXEL_DATA;
 					end if;
+				when others =>
+					ERROR <= '1';
 			
 			end case;
 		
