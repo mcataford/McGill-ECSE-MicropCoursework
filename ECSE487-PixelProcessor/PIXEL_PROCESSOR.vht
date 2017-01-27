@@ -31,7 +31,8 @@ USE ieee.std_logic_1164.all;
 ENTITY PIXEL_PROCESSOR_vhd_tst IS
 END PIXEL_PROCESSOR_vhd_tst;
 ARCHITECTURE PIXEL_PROCESSOR_arch OF PIXEL_PROCESSOR_vhd_tst IS
--- constants                                                 
+-- constants  
+constant clock_period : time := 1 ns;                                               
 -- signals                                                   
 SIGNAL CLOCK : STD_LOGIC;
 SIGNAL DATA_OUT : STD_LOGIC_VECTOR(7 DOWNTO 0);
@@ -69,18 +70,16 @@ BEGIN
 	PIXEL_OPERAND => PIXEL_OPERAND,
 	RESET => RESET
 	);
-init : PROCESS                                               
--- variable declarations                                     
-BEGIN                                                        
-        -- code that executes only once                      
-WAIT;                                                       
-END PROCESS init;                                           
-always : PROCESS                                              
--- optional sensitivity list                                  
--- (        )                                                 
--- variable declarations                                      
-BEGIN                                                         
-        -- code executes for every event on sensitivity list  
-WAIT;                                                        
-END PROCESS always;                                          
+
+
+
+clock_signal : process
+begin
+
+	CLOCK <= '1';
+	wait for clock_period / 2;
+	CLOCK <= '0';
+	wait for clock_period / 2; 
+
+end process;                                       
 END PIXEL_PROCESSOR_arch;
