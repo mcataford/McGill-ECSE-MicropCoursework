@@ -58,7 +58,7 @@ begin
 					
 				-- THRESH: Threshold pixel (output is MAXVAL if PIXEL_DATA > PIXEL_OPERAND)
 				when "111" => 
-					if to_integer(unsigned(PIXEL_DATA)) > MAXVAL then
+					if to_integer(unsigned(PIXEL_DATA)) > to_integer(unsigned(PIXEL_OPERAND)) then
 						DATA_OUT <= std_logic_vector(to_unsigned(MAXVAL,8));
 					else
 						DATA_OUT <= PIXEL_DATA;
