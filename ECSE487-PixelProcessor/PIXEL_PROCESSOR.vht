@@ -105,6 +105,36 @@ begin
 	wait for 1 * clock_period;
 	assert(DATA_OUT = "00000010") report("SUB failed.");
 
+	PIXEL_DATA <= "00000001";
+	PIXEL_OPERAND <= "00000011";
+	OPERATION <= "011";
+	wait for 1 * clock_period;
+	assert(DATA_OUT = "00000001") report("AND failed.");
+
+	PIXEL_DATA <= "00001001";
+	PIXEL_OPERAND <= "00000001";
+	OPERATION <= "100";
+	wait for 1 * clock_period;
+	assert(DATA_OUT = "00001001") report("OR failed.");
+
+	PIXEL_DATA <= "00000011";
+	PIXEL_OPERAND <= "00000001";
+	OPERATION <= "101";
+	wait for 1 * clock_period;
+	assert(DATA_OUT = "00000010") report("XOR failed.");
+
+	PIXEL_DATA <= "00001001";
+	PIXEL_OPERAND <= "00000001";
+	OPERATION <= "110";
+	wait for 1 * clock_period;
+	assert(DATA_OUT = "11110110") report("INVERT failed.");
+
+	PIXEL_DATA <= "00000011";
+	PIXEL_OPERAND <= "00000001";
+	OPERATION <= "111";
+	wait for 1 * clock_period;
+	assert(DATA_OUT = "11111111") report("THRESH failed.");
+
 end process;
                                     
 END PIXEL_PROCESSOR_arch;
