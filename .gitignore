@@ -1,5 +1,12 @@
 *.bak
+<<<<<<< HEAD
 *.mti
 *.mpf
 */work/*
 *.wlf
+=======
+*.wlf
+*.vstf
+
+work
+>>>>>>> d2ffca44a5f246d111957c20a2ee7b12d2165395
