@@ -14,27 +14,44 @@ end entity;
 
 architecture RIPPLEADDER_IMPL of RIPPLEADDER is
 
-signal S1,S2,S3,S4,S5: std_logic := '0';
-signal C1,C2,C3,C4,C5: std_logic := '0';
-
-component FULLADDER
-
-port(
-A,B,Cin: in std_logic;
-S,Cout: out std_logic
-);
-
-end component;
+--Intermediate signals for inter-FA communication.
+signal S1,S2,S3,S4,S5: std_logic;
+signal C1,C2,C3,C4: std_logic;
 
 begin
 
-FA1: FULLADDER port map(A(4),B(4),'0',S1,C1);
-FA2: FULLADDER port map(A(3),B(3),C1,S2,C2);
-FA3: FULLADDER port map(A(2),B(2),C2,S3,C3);
-FA4: FULLADDER port map(A(1),B(1),C3,S4,C4);
-FA5: FULLADDER port map(A(0),B(0),C4,S5,C5);
+--Each adder is modeled on the following provided equations:
+--S = A xor B xor Cin
+--Cout = Cin and (A or B) or A and B
+--
+--Each FA being 1-bit, the carry-out is used as the carry-in
+--of the next FA in line, the last carry-out is reported as output.
+--
+--It is assumed that the first carry-in is 0, hence why the first FA 
+--has different equations than the rest.
 
-Cout <= C5;
-S <= S1 & S2 & s3 & S4 & S5;
+--Full adder #1
+S1 <= A(0) xor B(0);
+C1 <= A(0) and B(0);
+
+--Full adder #2
+S2 <= A(1) xor B(1) xor C1;
+C2 <= (C1 and (A(1) or B(1))) or (A(1) and B(1));
+
+--Full adder #3
+S3 <= A(2) xor B(2) xor C2;
+C3 <= (C2 and (A(2) or B(2))) or (A(2) and B(2));
+
+--Full adder #4
+S4 <= A(3) xor B(3) xor C3;
+C4 <= (C3 and (A(3) or B(3))) or (A(3) and B(3));
+
+--Full adder #5
+S5 <= A(4) xor B(4) xor C4;
+Cout <= (C4 and (A(4) or B(4))) or (A(4) and B(4));
+
+--The bits of the sum are collected and concatenated into
+--a 5-bit vector.
+S <= S5 & S4 & S3 & S2 & S1;
 
 end architecture;
